@@ -1,5 +1,6 @@
 package com.example.userservice.controllers;
 
+import com.example.userservice.dtos.LoginDto;
 import com.example.userservice.services.AuthService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +15,8 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(String username, String password){
-        return authService.login(username,password);
+    public String login(LoginDto loginDto){
+        return authService.login(loginDto.getEmail(),loginDto.getPassword());
     }
 
     @GetMapping("/validate")
