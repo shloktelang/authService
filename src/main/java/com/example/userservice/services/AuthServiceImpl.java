@@ -8,6 +8,7 @@ import com.example.userservice.models.SessionStatus;
 import com.example.userservice.models.User;
 import com.example.userservice.repositories.SessionRepository;
 import com.example.userservice.repositories.UserRepository;
+import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.util.MultiValueMapAdapter;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -94,13 +96,22 @@ public class AuthServiceImpl implements AuthService{
         if(!bCryptPasswordEncoder.matches(password,user.getPassword())){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        String token = RandomStringUtils.randomAscii(20);
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("userID",user.getId());
+        claims.put("email",user.getEmail());
+        claims.put("role",user.getRoles());
+        String jwt = Jwts.builder()
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
+                .addClaims(claims)
+                .compact();
+        //String token = RandomStringUtils.randomAscii(20);
         MultiValueMapAdapter<String, String > headers = new MultiValueMapAdapter<>(new HashMap<>());
-        headers.add("AUTH_TOKEN", token);
+        headers.add("AUTH_TOKEN", jwt);
 
         Session session = new Session();
         session.setSessionStatus(SessionStatus.ACTIVE);
-        session.setToken(token);
+        session.setToken(jwt);
         session.setUser(user);
         sessionRepository.save(session);
 
