@@ -82,6 +82,7 @@ public class SecurityConfig {
             throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("auth/signup").permitAll() // since we don't need authentication on signup request, excluding it from authentication
                         .anyRequest().authenticated()
                 )
                 // Form login handles the redirect to the login page from the

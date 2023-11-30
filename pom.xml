@@ -85,6 +85,7 @@
 			<artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
 		</dependency>
 
+
 	</dependencies>
 
 	<build>
